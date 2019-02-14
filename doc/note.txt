@@ -1,0 +1,6 @@
+1.loader目录的运行机制是怎么样的？为什么没有编译就可以直接执行了？
+2.hideAPI为什么可以直接被library库给引用？
+3.loader模块为什么可以被编译，没有其它项目在引用它？
+4.gradle task依赖关系,如dependsOn findlizedBy
+5.task package vs assemble differences?
+6.gradle 生命周期，gradle config 阶段会遍历所有build.gradle脚本
