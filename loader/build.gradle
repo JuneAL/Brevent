@@ -33,12 +33,16 @@ if (project.gradle.startParameter.taskRequests?.empty) {
 } else {
     // for proguard
     dependencies {
-        implementation hiddenApi
+//        implementation hiddenApi
+        implementation project(':hidden-api')
     }
 }
 
 tasks.withType(JavaCompile) { compileTask ->
     compileTask.dependsOn ':hidden-api:build'
+    println("===================================")
+    println("compileTask >>>  ${compileTask}")
+    println("[study] >>>>>>>>>> compileTask.dependsOn ':hidden-api:build'")
     doFirst {
         options.compilerArgs << '-Xbootclasspath/p:' + hiddenApi.asPath
     }

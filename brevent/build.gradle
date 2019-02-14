@@ -141,7 +141,8 @@ if (project.gradle.startParameter.taskRequests?.empty) {
 } else {
     // for proguard
     dependencies {
-        implementation hiddenApi
+//        implementation hiddenApi
+        implementation project(':hidden-api')
     }
 }
 
@@ -159,11 +160,16 @@ task renameBootstrap {
 }
 
 task copyLoader {
+    println("task copyLoader configed!")
     doLast {
         fileTree("build/intermediates/transforms/stripDebugSymbol").visit { details ->
             if (details.name == "lib") {
                 rootProject.abiFilters.each { abi ->
                     copy {
+                        println("===================================")
+                        println("[study] copy so abi >>>>>>> ${abi}")
+                        println("[study] copy so into >>>>>>> ${details.file}/${abi}")
+
 //                        from fileTree(dir: project(':loader').file('build/intermediates/transforms/dex/release'), include: ['**/*.dex']).asPath
                         from fileTree(dir: project(':loader').file('build/intermediates/transforms/dexMerger/release'), include: ['**/*.dex']).asPath
                         rename { 'libloader.so' }
@@ -206,6 +212,7 @@ tasks.whenTaskAdded { task ->
 tasks.withType(JavaCompile) { compileTask ->
     compileTask.dependsOn buildBootstrap
     compileTask.dependsOn ':loader:packageRelease'
+//    buildBootstrap.dependsOn ':loader:packageRelease'
     doFirst {
         options.compilerArgs << '-Xbootclasspath/p:' + hiddenApi.asPath
     }
@@ -213,3 +220,18 @@ tasks.withType(JavaCompile) { compileTask ->
 
 clean.dependsOn cleanBootstrap
 clean.dependsOn deleteNativeBuild
+
+//project.gradle.addListener(new TaskExecutionListener() {
+//    def index = 0
+//
+//    @Override
+//    void beforeExecute(Task task) {
+//        println("start ... ${index}")
+//        index = index + 1
+//    }
+//
+//    @Override
+//    void afterExecute(Task task, TaskState state) {
+//
+//    }
+//})
