@@ -6,6 +6,7 @@
 #include <libgen.h>
 #include <dirent.h>
 #include <time.h>
+#include <errno.h>
 
 #define PROJECT "https://github.com/liudongmiao/Brevent/issues"
 

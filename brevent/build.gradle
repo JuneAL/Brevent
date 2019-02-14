@@ -14,7 +14,7 @@ def getBreventVersion = { ->
 
 android {
     compileSdkVersion rootProject.targetSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '28.0.2'
 
     buildTypes {
         release {
@@ -92,6 +92,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    defaultConfig {
+        minSdkVersion = 23
+    }
 
     if (project.gradle.startParameter.taskRequests?.empty) {
         // for ide
@@ -101,33 +104,44 @@ android {
             }
         }
     }
+
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'x86_64'
+            universalApk true
+        }
+    }
 }
 
 dependencies {
-    compile "com.android.support:support-core-ui:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:support-v13:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:cardview-v7:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:recyclerview-v7:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:design:${rootProject.supportLibraryVersion}"
-    compile project(':donation')
-    compile project(':log-reader-jni')
-    compile project(':brevent-override')
-    compile project(':brevent-override-m')
-    provided project(':log-reader')
-    compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
+    implementation "com.android.support:support-core-ui:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:support-v13:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:cardview-v7:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:recyclerview-v7:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:design:${rootProject.supportLibraryVersion}"
+    implementation project(':donation')
+    implementation project(':log-reader-jni')
+    implementation project(':brevent-override')
+    implementation project(':brevent-override-m')
+    compileOnly project(':log-reader')
+    implementation 'eu.chainfire:libsuperuser:1.0.0.201608240809'
 }
 
-def hiddenApi = files(project(':hidden-api').file('build/intermediates/bundles/default/classes.jar'))
+//def hiddenApi = files(project(':hidden-api').file('build/intermediates/bundles/default/classes.jar'))
+def hiddenApi = files(project(':hidden-api').file('build/intermediates/packaged-classes/debug/classes.jar'))
 
 if (project.gradle.startParameter.taskRequests?.empty) {
     // for ide, aar cannot be provided
     dependencies {
-        compile project(':hidden-api')
+        implementation project(':hidden-api')
     }
 } else {
     // for proguard
     dependencies {
-        provided hiddenApi
+        implementation hiddenApi
     }
 }
 
@@ -150,7 +164,8 @@ task copyLoader {
             if (details.name == "lib") {
                 rootProject.abiFilters.each { abi ->
                     copy {
-                        from fileTree(dir: project(':loader').file('build/intermediates/transforms/dex/release'), include: ['**/*.dex']).asPath
+//                        from fileTree(dir: project(':loader').file('build/intermediates/transforms/dex/release'), include: ['**/*.dex']).asPath
+                        from fileTree(dir: project(':loader').file('build/intermediates/transforms/dexMerger/release'), include: ['**/*.dex']).asPath
                         rename { 'libloader.so' }
                         into file("${details.file}/${abi}")
                     }
@@ -162,7 +177,7 @@ task copyLoader {
 }
 
 task buildBootstrap(type: Exec) {
-    commandLine "${android.ndkDirectory}/ndk-build",
+    commandLine "${android.ndkDirectory}\\ndk-build.cmd",
             '-C', file('src/main/jni').path,
             'APP_BUILD_SCRIPT=Android.mk',
             'NDK_APPLICATION_MK=Application.mk'
@@ -171,7 +186,7 @@ task buildBootstrap(type: Exec) {
 buildBootstrap.finalizedBy renameBootstrap
 
 task cleanBootstrap(type: Exec) {
-    commandLine "${android.ndkDirectory}/ndk-build",
+    commandLine "${android.ndkDirectory}\\ndk-build.cmd",
             '-C', file('src/main/jni').path,
             'APP_BUILD_SCRIPT=Android.mk',
             'NDK_APPLICATION_MK=Application.mk',

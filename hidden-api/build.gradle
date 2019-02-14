@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.targetSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -16,5 +16,5 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:support-annotations:${rootProject.supportLibraryVersion}"
 }

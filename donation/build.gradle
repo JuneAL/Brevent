@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.targetSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -11,8 +11,8 @@ android {
 }
 
 dependencies {
-    compile 'com.google.zxing:core:3.3.0'
-    compile "com.android.support:support-annotations:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:support-compat:${rootProject.supportLibraryVersion}"
-    compile "com.android.support:support-core-utils:${rootProject.supportLibraryVersion}"
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation "com.android.support:support-annotations:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:support-compat:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:support-core-utils:${rootProject.supportLibraryVersion}"
 }
